@@ -1,0 +1,131 @@
+{
+  "schema": 1,
+  "employers": [
+    {
+      "id": "emp-msw2r8ta-5edlrz",
+      "name": "حاج رضا تعمیرگاه",
+      "phones": [
+        "09121234567",
+        "02155551111"
+      ],
+      "foremanName": "مشهدی اکبر",
+      "foremanPhone": "09339998877",
+      "notes": "کنار بانک ملی",
+      "createdAt": 1786901063518
+    },
+    {
+      "id": "emp-msw2raf6-x3nf2x",
+      "name": "آهنگری برادران",
+      "phones": [
+        "09127776655"
+      ],
+      "foremanName": "",
+      "foremanPhone": "",
+      "notes": "",
+      "createdAt": 1786901065602
+    }
+  ],
+  "menuItems": [
+    {
+      "id": "item-nokav",
+      "name": "نوکاو (همراه یک چایی)",
+      "price": 200000,
+      "active": true
+    },
+    {
+      "id": "item-chai",
+      "name": "چایی اضافه (هر عدد)",
+      "price": 20000,
+      "active": true
+    },
+    {
+      "id": "item-omlet",
+      "name": "املت",
+      "price": 170000,
+      "active": true
+    },
+    {
+      "id": "item-lubia",
+      "name": "لوبیا",
+      "price": 190000,
+      "active": true
+    },
+    {
+      "id": "item-msw2rbtm-tj6bpo",
+      "name": "عدسی",
+      "price": 160000,
+      "active": true
+    }
+  ],
+  "orders": [
+    {
+      "id": "ord-msw2r9af-0buqak",
+      "employerId": "emp-msw2r8ta-5edlrz",
+      "dateKey": "1405/05/25",
+      "people": 3,
+      "lines": [
+        {
+          "itemId": "item-nokav",
+          "name": "نوکاو (همراه یک چایی)",
+          "price": 140000,
+          "qty": 2
+        },
+        {
+          "itemId": "item-chai",
+          "name": "چایی اضافه (هر عدد)",
+          "price": 20000,
+          "qty": 1
+        },
+        {
+          "itemId": "item-omlet",
+          "name": "املت",
+          "price": 170000,
+          "qty": 1
+        },
+        {
+          "itemId": "item-lubia",
+          "name": "لوبیا",
+          "price": 190000,
+          "qty": 1
+        }
+      ],
+      "total": 660000,
+      "settlementId": "stl-msw2rawr-ocxiu0",
+      "createdAt": 1786901064135
+    },
+    {
+      "id": "ord-msw2ra27-lwfcjh",
+      "employerId": "emp-msw2r8ta-5edlrz",
+      "dateKey": "1405/04/10",
+      "people": 0,
+      "lines": [
+        {
+          "itemId": "item-lubia",
+          "name": "لوبیا",
+          "price": 190000,
+          "qty": 2
+        }
+      ],
+      "total": 380000,
+      "settlementId": "stl-msw2rawr-ocxiu0",
+      "createdAt": 1786901065135
+    }
+  ],
+  "settlements": [
+    {
+      "id": "stl-msw2rawr-ocxiu0",
+      "employerId": "emp-msw2r8ta-5edlrz",
+      "dateKey": "1405/05/25",
+      "total": 1040000,
+      "orderCount": 2,
+      "createdAt": 1786901066235
+    }
+  ],
+  "settings": {
+    "digits": "fa",
+    "telegramToken": "",
+    "telegramChatId": "",
+    "lastBackupAt": 1786901063633,
+    "backupIntervalDays": 7
+  }
+}
