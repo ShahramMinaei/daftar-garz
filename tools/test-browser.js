@@ -46,10 +46,15 @@ async function openSettlementDetails(page) {
   check('نوار عنوان فارسی', (await page.locator('.topbar h1').textContent()) === 'دفتر قرض');
   check('راست‌به‌چپ', await page.evaluate(() => document.documentElement.dir) === 'rtl');
   check('مجموع مطالبات صفر', (await page.locator('.summary .value').textContent()).includes('۰'));
+  check('نام چایخانه بالای صفحه', (await page.locator('.summary .shop').textContent()) === 'چایخانه سه‌رچاوه');
+  check('آیکون جستجو تصویر برداری است', await page.evaluate(() => {
+    const el = document.querySelector('.search-icon');
+    return el && el.tagName.toLowerCase() === 'svg' && el.getBoundingClientRect().width >= 20;
+  }));
   check('فونت وزیرمتن بارگذاری شد', await page.evaluate(() => document.fonts.check('16px Vazirmatn')));
   await page.screenshot({ path: path.join(SHOTS, '01-home-empty.png') });
 
-  section('۲) افزودن صاحب‌کار');
+  section('۲) افزودن کارفرما');
   await page.click('[data-add-employer]');
   await page.fill('#f-name', 'حاج رضا تعمیرگاه');
   await page.fill('[data-phone="0"]', '09121234567');
@@ -140,7 +145,7 @@ async function openSettlementDetails(page) {
   await page.waitForSelector('.balance-box');
   await page.click('[data-back]');
   await page.waitForSelector('#search');
-  check('دو صاحب‌کار در فهرست', await page.locator('.row-card').count() === 2);
+  check('دو کارفرما در فهرست', await page.locator('.row-card').count() === 2);
   check('مرتب الفبایی (آهنگری اول)', (await page.locator('.row-card .name').first().textContent()) === 'آهنگری برادران');
 
   await page.fill('#search', 'رضا');
@@ -148,7 +153,7 @@ async function openSettlementDetails(page) {
   await page.fill('#search', 'اکبر');
   check('جستجو با نام استادکار', (await page.locator('.row-card .name').first().textContent()) === 'حاج رضا تعمیرگاه');
   await page.fill('#search', '5555');
-  check('جستجو با شماره‌ی دوم صاحب‌کار', (await page.locator('.row-card .name').first().textContent()) === 'حاج رضا تعمیرگاه');
+  check('جستجو با شماره‌ی دوم کارفرما', (await page.locator('.row-card .name').first().textContent()) === 'حاج رضا تعمیرگاه');
   await page.fill('#search', '۹۳۳۹');
   check('جستجو با شماره‌ی استادکار و رقم فارسی', (await page.locator('.row-card .name').first().textContent()) === 'حاج رضا تعمیرگاه');
   await page.fill('#search', 'هیچ‌کس');
@@ -244,7 +249,7 @@ async function openSettlementDetails(page) {
   const jsonPath = path.join(SHOTS, '..', 'tools', '_backup.json');
   await jsonDl.saveAs(jsonPath);
   const backup = JSON.parse(fs.readFileSync(jsonPath, 'utf8'));
-  check('فایل بازیابی شامل ۲ صاحب‌کار', backup.employers.length === 2);
+  check('فایل بازیابی شامل ۲ کارفرما', backup.employers.length === 2);
   check('فایل بازیابی شامل تسویه', backup.settlements.length === 1);
   check('خط «آخرین پشتیبان‌گیری» به‌روز شد', (await page.locator('.card .info-line').first().textContent()).includes('امروز'));
 
@@ -255,9 +260,33 @@ async function openSettlementDetails(page) {
   check('تاییدیه‌ی بازیابی تعداد را می‌گوید', (await page.locator('.dialog').textContent()).includes('۲'));
   await page.click('.dialog [data-act="yes"]');
   await page.waitForSelector('#search');
-  check('بعد از بازیابی، دو صاحب‌کار هست', await page.locator('.row-card').count() === 2);
+  check('بعد از بازیابی، دو کارفرما هست', await page.locator('.row-card').count() === 2);
 
-  section('۱۵) تغییر ارقام به لاتین');
+  section('۱۵) تغییر نام چایخانه');
+  await page.click('[data-nav-settings]');
+  await page.waitForSelector('#shop-name');
+  await page.fill('#shop-name', 'چایخانه سه‌رچاوه');
+  await page.click('#shop-save');
+  await page.waitForTimeout(250);
+  await page.click('[data-back]');
+  await page.waitForSelector('.summary');
+  check('نام تازه در صفحه‌ی اصلی نشست', (await page.locator('.summary .shop').textContent()) === 'چایخانه سه‌رچاوه');
+  await page.click('[data-nav-settings]');
+  await page.waitForSelector('#shop-name');
+  await page.fill('#shop-name', '');
+  await page.click('#shop-save');
+  await page.waitForTimeout(250);
+  await page.click('[data-back]');
+  await page.waitForSelector('.summary');
+  check('با نام خالی، خط نام اصلاً نشان داده نمی‌شود', await page.locator('.summary .shop').count() === 0);
+  await page.click('[data-nav-settings]');
+  await page.fill('#shop-name', 'چایخانه سه‌رچاوه');
+  await page.click('#shop-save');
+  await page.waitForTimeout(250);
+  await page.click('[data-back]');
+  await page.waitForSelector('.summary');
+
+  section('۱۶) تغییر ارقام به لاتین');
   await page.click('[data-nav-settings]');
   await page.waitForSelector('#digits-toggle');
   await page.click('#digits-toggle');
@@ -272,7 +301,7 @@ async function openSettlementDetails(page) {
   await page.waitForSelector('.summary');
   check('برگشت به ارقام فارسی', /[۰-۹]/.test(await page.locator('.summary .value').textContent()));
 
-  section('۱۶) آزمون آفلاین (شبیه‌سازی خاموش‌بودن اینترنت)');
+  section('۱۷) آزمون آفلاین (شبیه‌سازی خاموش‌بودن اینترنت)');
   const swReady = await page.evaluate(() => navigator.serviceWorker.ready.then(r => !!r.active));
   check('سرویس‌ورکر فعال است', swReady);
   const cached = await page.evaluate(async () => {
@@ -309,7 +338,7 @@ async function openSettlementDetails(page) {
   check('آفلاین: مجموع مطالبات در صفحه‌ی اصلی درست است', (await page.locator('.summary .value').textContent()).includes('۳۴۰,۰۰۰'));
   await context.setOffline(false);
 
-  section('۱۷) پشتیبان‌گیری خودکار هفتگی (بدون فشردن هیچ دکمه‌ای)');
+  section('۱۸) پشتیبان‌گیری خودکار هفتگی (بدون فشردن هیچ دکمه‌ای)');
   // وانمود می‌کنیم ۸ روز از پشتیبان قبلی گذشته است
   await page.evaluate(() => {
     window.Store.updateSettings({ lastBackupAt: Date.now() - 8 * 24 * 60 * 60 * 1000 });
@@ -331,7 +360,7 @@ async function openSettlementDetails(page) {
   const notDue = await page.evaluate(() => window.Backup.isDue());
   check('پس از پشتیبان‌گیری، تا هفته‌ی بعد دیگر تکرار نمی‌شود', notDue === false);
 
-  section('۱۸) خطاهای جاوااسکریپت');
+  section('۱۹) خطاهای جاوااسکریپت');
   check('هیچ خطای اجرایی رخ نداد', errors.length === 0, errors.slice(0, 3).join(' | '));
 
   await browser.close();

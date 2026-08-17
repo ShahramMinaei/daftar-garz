@@ -24,6 +24,7 @@
       orders: [],
       settlements: [],
       settings: {
+        shopName: 'چایخانه سه‌رچاوه', // نام کسب‌وکار، در صفحه‌ی اصلی و پشتیبان‌ها نشان داده می‌شود
         digits: 'fa',              // «fa» = ارقام فارسی، «en» = ارقام لاتین
         telegramToken: '',
         telegramChatId: '',
@@ -139,7 +140,7 @@
       .sort(function (a, b) { return a.dateKey.localeCompare(b.dateKey); });
   }
 
-  /* ---------- صاحب‌کار ---------- */
+  /* ---------- کارفرما ---------- */
 
   function employerById(id) {
     return get().employers.find(function (e) { return e.id === id; }) || null;

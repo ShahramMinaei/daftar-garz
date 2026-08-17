@@ -226,15 +226,24 @@ textarea.input { min-height: 92px; resize: vertical; line-height: 1.8; }
 
 /* ---------- جستجو ---------- */
 .search-wrap { position: relative; margin-bottom: 12px; }
-.search-wrap .input { padding-right: 46px; font-size: 17px; }
+.search-wrap .input { padding-right: 50px; font-size: 17px; }
 .search-wrap .search-icon {
   position: absolute;
-  right: 14px;
+  right: 15px;
   top: 50%;
   transform: translateY(-50%);
-  font-size: 18px;
-  color: var(--ink-2);
+  width: 24px;
+  height: 24px;
+  color: var(--brand);
   pointer-events: none;
+}
+.empty .empty-icon {
+  display: block;
+  width: 46px;
+  height: 46px;
+  margin: 0 auto 10px;
+  color: var(--ink-2);
+  opacity: .75;
 }
 
 /* ---------- خلاصه‌ی مطالبات ---------- */
@@ -245,6 +254,15 @@ textarea.input { min-height: 92px; resize: vertical; line-height: 1.8; }
   padding: 14px 16px;
   margin-bottom: 14px;
   text-align: center;
+}
+.summary .shop {
+  font-size: 21px;
+  font-weight: 700;
+  color: var(--brand-ink);
+  line-height: 1.55;
+  padding-bottom: 9px;
+  margin-bottom: 10px;
+  border-bottom: 1px solid rgba(194, 65, 12, .16);
 }
 .summary .label { font-size: 15px; color: var(--brand-ink); font-weight: 500; }
 .summary .value { font-size: 30px; font-weight: 700; color: var(--brand); line-height: 1.4; }

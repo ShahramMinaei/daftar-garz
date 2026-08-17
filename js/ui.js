@@ -64,6 +64,14 @@
 
   function digitsOnly(s) { return J.toLatinDigits(String(s || '')).replace(/\D/g, ''); }
 
+  /* ذره‌بین به‌صورت تصویر برداری کشیده می‌شود، چون نویسه‌های ذره‌بین در فونت‌ها
+     ریز و ناخوانا در می‌آیند و اندازه‌شان قابل کنترل نیست. */
+  function searchIcon(className) {
+    return '<svg class="' + className + '" viewBox="0 0 24 24" fill="none" ' +
+      'stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true">' +
+      '<circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5 L21 21"/></svg>';
+  }
+
   /* ================= پیام کوتاه ================= */
 
   function toast(message, kind) {
@@ -295,13 +303,16 @@
         '<span aria-hidden="true">⚙</span><span>تنظیمات</span></button>'
     });
 
+    var shopName = (state.settings.shopName || '').trim();
+
     html += '<div class="content has-dock">' +
       '<div class="summary">' +
+      (shopName ? '<div class="shop">' + esc(shopName) + '</div>' : '') +
       '<div class="label">مجموع کل مطالبات</div>' +
       '<div class="value">' + moneyHtml(total) + '</div>' +
       '</div>' +
       '<div class="search-wrap">' +
-      '<span class="search-icon" aria-hidden="true">⌕</span>' +
+      searchIcon('search-icon') +
       '<input class="input" id="search" type="search" placeholder="جستجوی نام، استادکار یا شماره تلفن" ' +
       'value="' + esc(searchTerm) + '" autocomplete="off">' +
       '</div>' +
@@ -310,7 +321,7 @@
 
     html += '<div class="dock">' +
       '<button class="btn btn-primary" data-add-employer="1">' +
-      '<span aria-hidden="true">＋</span><span>افزودن صاحب‌کار جدید</span></button></div>';
+      '<span aria-hidden="true">＋</span><span>افزودن کارفرمای جدید</span></button></div>';
 
     var wrap = mount(html);
     var listEl = wrap.querySelector('#employer-list');
@@ -323,8 +334,8 @@
       if (!employers.length) {
         listEl.innerHTML = '<div class="empty">' +
           (state.employers.length
-            ? '<span class="big-emoji" aria-hidden="true">⌕</span>صاحب‌کاری با این مشخصات پیدا نشد.'
-            : '<span class="big-emoji" aria-hidden="true">📓</span>هنوز هیچ صاحب‌کاری ثبت نشده است.<br>' +
+            ? searchIcon('empty-icon') + 'کارفرمایی با این مشخصات پیدا نشد.'
+            : '<span class="big-emoji" aria-hidden="true">📓</span>هنوز هیچ کارفرمایی ثبت نشده است.<br>' +
               'با دکمه‌ی پایین صفحه اولین نفر را اضافه کنید.') +
           '</div>';
         return;
@@ -360,7 +371,7 @@
     });
   }
 
-  /* ================= فرم صاحب‌کار ================= */
+  /* ================= فرم کارفرما ================= */
 
   function screenEmployerForm(route) {
     var editing = route.id ? Store.employerById(route.id) : null;
@@ -369,12 +380,12 @@
     var phones = editing && editing.phones.length ? editing.phones.slice() : [''];
 
     var html = topbar({
-      title: editing ? 'ویرایش صاحب‌کار' : 'صاحب‌کار جدید',
+      title: editing ? 'ویرایش کارفرما' : 'کارفرمای جدید',
       back: editing ? '#/employer/' + editing.id : '#/'
     });
 
     html += '<div class="content has-dock"><div class="card">' +
-      '<div class="field"><label for="f-name">نام صاحب‌کار <span class="muted small">(الزامی)</span></label>' +
+      '<div class="field"><label for="f-name">نام کارفرما <span class="muted small">(الزامی)</span></label>' +
       '<input class="input" id="f-name" type="text" value="' + esc(editing ? editing.name : '') + '" placeholder="مثلاً: حاج رضا تعمیرگاه"></div>' +
 
       '<div class="field"><label>شماره‌های تلفن</label><div id="phones"></div>' +
@@ -395,7 +406,7 @@
 
     if (editing) {
       html += '<button class="btn btn-danger" id="delete-employer" type="button">' +
-        '<span aria-hidden="true">🗑</span><span>حذف این صاحب‌کار</span></button>';
+        '<span aria-hidden="true">🗑</span><span>حذف این کارفرما</span></button>';
     }
     html += '</div>';
 
@@ -443,7 +454,7 @@
     wrap.querySelector('#save').addEventListener('click', function () {
       var name = wrap.querySelector('#f-name').value.trim();
       if (!name) {
-        toast('نام صاحب‌کار را بنویسید.', 'err');
+        toast('نام کارفرما را بنویسید.', 'err');
         wrap.querySelector('#f-name').focus();
         return;
       }
@@ -456,7 +467,7 @@
         notes: wrap.querySelector('#f-notes').value.trim()
       };
       var id = Store.saveEmployer(data);
-      toast(editing ? 'تغییرات ذخیره شد.' : 'صاحب‌کار اضافه شد.', 'ok');
+      toast(editing ? 'تغییرات ذخیره شد.' : 'کارفرما اضافه شد.', 'ok');
       go('#/employer/' + id);
     });
 
@@ -464,7 +475,7 @@
     if (delBtn) {
       delBtn.addEventListener('click', function () {
         confirmDialog({
-          title: 'حذف صاحب‌کار',
+          title: 'حذف کارفرما',
           html: 'با حذف <b>' + esc(editing.name) + '</b>، همه‌ی سفارش‌ها و تسویه‌های او هم پاک می‌شوند.<br>' +
             'این کار برگشت‌پذیر نیست. آیا مطمئنید؟',
           confirmText: 'بله، حذف کن',
@@ -472,14 +483,14 @@
         }).then(function (yes) {
           if (!yes) return;
           Store.deleteEmployer(editing.id);
-          toast('صاحب‌کار حذف شد.', 'ok');
+          toast('کارفرما حذف شد.', 'ok');
           go('#/');
         });
       });
     }
   }
 
-  /* ================= جزئیات صاحب‌کار ================= */
+  /* ================= جزئیات کارفرما ================= */
 
   function orderItemsText(order) {
     if (!order.lines.length) return '—';
@@ -499,7 +510,7 @@
     var html = topbar({
       title: employer.name,
       back: '#/',
-      action: '<button class="topbar-btn" data-edit="1" aria-label="ویرایش صاحب‌کار">' +
+      action: '<button class="topbar-btn" data-edit="1" aria-label="ویرایش کارفرما">' +
         '<span aria-hidden="true">✎</span><span>ویرایش</span></button>'
     });
 
@@ -527,7 +538,7 @@
 
     /* مانده */
     html += '<div class="balance-box ' + (balance > 0 ? 'debt' : 'zero') + '">' +
-      '<div class="label">' + (balance > 0 ? 'مانده‌ی حساب باز' : 'حساب این صاحب‌کار تسویه است') + '</div>' +
+      '<div class="label">' + (balance > 0 ? 'مانده‌ی حساب باز' : 'حساب این کارفرما تسویه است') + '</div>' +
       (balance > 0 ? '<div class="value">' + moneyHtml(balance) + '</div>' : '') +
       '</div>';
 
@@ -849,6 +860,17 @@
     var html = topbar({ title: 'تنظیمات', back: '#/' });
     html += '<div class="content">';
 
+    /* نام کسب‌وکار */
+    html += '<div class="section-title">نام چایخانه</div>' +
+      '<div class="card">' +
+      '<div class="field" style="margin-bottom:12px">' +
+      '<label for="shop-name">این نام بالای صفحه‌ی اصلی و روی پشتیبان‌ها نوشته می‌شود</label>' +
+      '<input class="input" id="shop-name" type="text" autocomplete="off" ' +
+      'placeholder="مثلاً: چایخانه سه‌رچاوه" value="' + esc(state.settings.shopName || '') + '"></div>' +
+      '<button class="btn btn-secondary btn-sm" id="shop-save" style="width:100%">' +
+      '<span aria-hidden="true">✓</span><span>ذخیره‌ی نام</span></button>' +
+      '</div>';
+
     /* قلم‌های منو */
     html += '<div class="section-title">قلم‌های منو و قیمت‌ها</div>' +
       '<div class="notice">اگر قیمتی را عوض کنید، فقط روی سفارش‌های <b>جدید</b> اثر می‌گذارد. ' +
@@ -920,6 +942,12 @@
     html += '</div>';
 
     var wrap = mount(html);
+
+    /* --- نام چایخانه --- */
+    wrap.querySelector('#shop-save').addEventListener('click', function () {
+      Store.updateSettings({ shopName: wrap.querySelector('#shop-name').value.trim() });
+      toast('نام چایخانه ذخیره شد.', 'ok');
+    });
 
     /* --- قلم‌های منو --- */
     wrap.querySelector('#add-item').addEventListener('click', function () {
@@ -1003,7 +1031,7 @@
       global.Backup.parseBackupFile(file).then(function (data) {
         return confirmDialog({
           title: 'بازیابی اطلاعات',
-          html: 'این فایل شامل <b>' + num((data.employers || []).length) + '</b> صاحب‌کار و <b>' +
+          html: 'این فایل شامل <b>' + num((data.employers || []).length) + '</b> کارفرما و <b>' +
             num((data.orders || []).length) + '</b> سفارش است.<br>' +
             'با بازیابی، همه‌ی اطلاعات فعلی اپ <b>پاک</b> و جای آن‌ها اطلاعات این فایل نشانده می‌شود. آیا مطمئنید؟',
           confirmText: 'بله، بازیابی کن',

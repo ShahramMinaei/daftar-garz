@@ -65,10 +65,10 @@ var o1 = Store.saveOrder({ employerId: empId, dateKey: d1, people: 3, lines: ex1
 check('مبلغ سفارش اول', Store.orderById(o1).total, 470000);
 
 Store.saveOrder({ employerId: empId, dateKey: d2, people: 2, lines: [line(LUBIA, 2)] });
-check('مانده‌ی حساب باز صاحب‌کار اول', Store.openBalanceOf(empId), 470000 + 380000);
+check('مانده‌ی حساب باز کارفرمای اول', Store.openBalanceOf(empId), 470000 + 380000);
 
 Store.saveOrder({ employerId: emp2, dateKey: d1, people: 1, lines: [line(OMLET, 1)] });
-check('مانده‌ی صاحب‌کار دوم', Store.openBalanceOf(emp2), 170000);
+check('مانده‌ی کارفرمای دوم', Store.openBalanceOf(emp2), 170000);
 check('مجموع کل مطالبات', Store.totalReceivables(), 850000 + 170000);
 
 section('۵) قلم‌های با تعداد صفر ذخیره نمی‌شوند');
@@ -100,7 +100,7 @@ check('حساب باز صفر شد', Store.openBalanceOf(empId), 0);
 check('سفارش‌های باز خالی شد', Store.openOrdersOf(empId).length, 0);
 check('تاریخچه یک دسته دارد', Store.settlementsOf(empId).length, 1);
 check('جزئیات دسته‌ی تسویه', Store.ordersOfSettlement(stl.id).length, 2);
-check('مجموع مطالبات فقط صاحب‌کار دوم', Store.totalReceivables(), 170000);
+check('مجموع مطالبات فقط کارفرمای دوم', Store.totalReceivables(), 170000);
 
 section('۹) سفارش جدید بعد از تسویه به حساب باز تازه می‌رود');
 Store.saveOrder({ employerId: empId, dateKey: settleDate, people: 1, lines: [line(CHAI, 5)] });
@@ -112,12 +112,12 @@ Store.undoSettlement(stl.id);
 check('مانده پس از برگرداندن', Store.openBalanceOf(empId), 100000 + 1040000);
 check('تاریخچه خالی شد', Store.settlementsOf(empId).length, 0);
 
-section('۱۱) حذف صاحب‌کار، سفارش‌هایش را هم پاک می‌کند');
+section('۱۱) حذف کارفرما، سفارش‌هایش را هم پاک می‌کند');
 var before = Store.get().orders.length;
 Store.deleteEmployer(empId);
-check('صاحب‌کار حذف شد', Store.employerById(empId), null);
+check('کارفرما حذف شد', Store.employerById(empId), null);
 check('سفارش‌هایش هم پاک شدند', Store.get().orders.length, before - 3);
-check('صاحب‌کار دیگر دست‌نخورده', Store.openBalanceOf(emp2), 170000);
+check('کارفرمای دیگر دست‌نخورده', Store.openBalanceOf(emp2), 170000);
 
 section('۱۲) ماندگاری روی حافظه‌ی محلی');
 var raw = JSON.parse(mem['daftar-qarz/data']);

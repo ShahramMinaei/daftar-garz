@@ -31,9 +31,9 @@
     });
 
     var sheetEmployers = {
-      name: 'صاحب‌کارها',
+      name: 'کارفرماها',
       widths: [26, 24, 20, 18, 34, 18],
-      rows: [['نام صاحب‌کار', 'شماره‌های تلفن', 'نام استادکار', 'شماره استادکار', 'توضیحات', 'مانده‌ی حساب باز (تومان)']]
+      rows: [['نام کارفرما', 'شماره‌های تلفن', 'نام استادکار', 'شماره استادکار', 'توضیحات', 'مانده‌ی حساب باز (تومان)']]
     };
     employers.forEach(function (e) {
       sheetEmployers.rows.push([
@@ -49,7 +49,7 @@
     var sheetOrders = {
       name: 'سفارش‌های روزانه',
       widths: [26, 14, 12, 40, 20, 14, 14],
-      rows: [['صاحب‌کار', 'تاریخ', 'تعداد نفر', 'اقلام سفارش', 'مبلغ کل (تومان)', 'وضعیت', 'تاریخ تسویه']]
+      rows: [['کارفرما', 'تاریخ', 'تعداد نفر', 'اقلام سفارش', 'مبلغ کل (تومان)', 'وضعیت', 'تاریخ تسویه']]
     };
     var settlementById = {};
     state.settlements.forEach(function (s) { settlementById[s.id] = s; });
@@ -76,7 +76,7 @@
     var sheetSettlements = {
       name: 'تسویه‌ها',
       widths: [26, 16, 20, 18],
-      rows: [['صاحب‌کار', 'تاریخ تسویه', 'مبلغ تسویه (تومان)', 'تعداد روزهای تسویه‌شده']]
+      rows: [['کارفرما', 'تاریخ تسویه', 'مبلغ تسویه (تومان)', 'تعداد روزهای تسویه‌شده']]
     };
     state.settlements.slice().sort(function (a, b) {
       return a.dateKey.localeCompare(b.dateKey);
@@ -184,7 +184,9 @@
     var telegramStep = Promise.resolve();
     if (token && chatId) {
       var t = J.today();
-      var caption = 'پشتیبان دفتر قرض — ' + t.jy + '/' + pad(t.jm) + '/' + pad(t.jd);
+      var shopName = (settings.shopName || '').trim();
+      var caption = 'پشتیبان ' + (shopName || 'دفتر قرض') +
+        ' — ' + t.jy + '/' + pad(t.jm) + '/' + pad(t.jd);
       telegramStep = sendToTelegram(token, chatId, xlsxBlob, xlsxName, caption)
         .then(function () { return sendToTelegram(token, chatId, jsonBlob, jsonName, 'فایل بازیابی'); })
         .then(function () { result.telegram = 'sent'; })
