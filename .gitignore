@@ -1,0 +1,8 @@
+# فایل‌های موقتی که آزمون‌ها می‌سازند
+tools/_*
+
+# فایل‌های موقت ویندوز و ویرایشگر
+Thumbs.db
+desktop.ini
+.DS_Store
+node_modules/
